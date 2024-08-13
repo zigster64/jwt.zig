@@ -78,87 +78,89 @@ pub fn verify(
     const sig = try allocator.alloc(u8, try decoder.calcSizeForSlice(sigEnc));
     _ = try decoder.decode(sig, sigEnc);
 
-    switch (algo) {
-        .HS256 => {
-            var dest: [std.crypto.auth.hmac.sha2.HmacSha256.mac_length]u8 = undefined;
-            var src: [dest.len]u8 = undefined;
-            std.crypto.auth.hmac.sha2.HmacSha256.create(&dest, msg, switch (key) {
-                .secret => |v| v,
-                else => return error.InvalidDecodingKey,
-            });
-            @memcpy(&src, sig);
-            if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
-                return error.InvalidSignature;
-            }
-        },
-        .HS384 => {
-            var dest: [std.crypto.auth.hmac.sha2.HmacSha384.mac_length]u8 = undefined;
-            var src: [dest.len]u8 = undefined;
-            std.crypto.auth.hmac.sha2.HmacSha384.create(&dest, msg, switch (key) {
-                .secret => |v| v,
-                else => return error.InvalidDecodingKey,
-            });
-            @memcpy(&src, sig);
-            if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
-                return error.InvalidSignature;
-            }
-        },
-        .HS512 => {
-            var dest: [std.crypto.auth.hmac.sha2.HmacSha512.mac_length]u8 = undefined;
-            var src: [dest.len]u8 = undefined;
-            std.crypto.auth.hmac.sha2.HmacSha512.create(&dest, msg, switch (key) {
-                .secret => |v| v,
-                else => return error.InvalidDecodingKey,
-            });
-            @memcpy(&src, sig);
-            if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
-                return error.InvalidSignature;
-            }
-        },
-        .ES256 => {
-            var src: [std.crypto.sign.ecdsa.EcdsaP256Sha256.Signature.encoded_length]u8 = undefined;
-            @memcpy(&src, sig);
-            std.crypto.sign.ecdsa.EcdsaP256Sha256.Signature.fromBytes(src).verify(msg, switch (key) {
-                .es256 => |v| v,
-                else => return error.InvalidDecodingKey,
-            }) catch {
-                return error.InvalidSignature;
-            };
-        },
-        .ES384 => {
-            var src: [std.crypto.sign.ecdsa.EcdsaP384Sha384.Signature.encoded_length]u8 = undefined;
-            @memcpy(&src, sig);
-            std.crypto.sign.ecdsa.EcdsaP384Sha384.Signature.fromBytes(src).verify(msg, switch (key) {
-                .es384 => |v| v,
-                else => return error.InvalidDecodingKey,
-            }) catch {
-                return error.InvalidSignature;
-            };
-        },
-        // .PS256 => {
-        //     const modulus_len = 256;
-        //     const psSig = std.crypto.Certificate.rsa.PSSSignature.fromBytes(modulus_len, sig);
-        //     std.crypto.Certificate.rsa.PSSSignature.verify(modulus_len, psSig, msg, switch (key) {
-        //         .rsa => |v| v,
-        //         else => return error.InvalidDecodingKey,
-        //     }, std.crypto.hash.sha2.Sha256) catch {
-        //         return error.InvalidSignature;
-        //     };
-        // },
-        .EdDSA => {
-            var src: [std.crypto.sign.Ed25519.Signature.encoded_length]u8 = undefined;
-            @memcpy(&src, sig);
-            std.crypto.sign.Ed25519.Signature.fromBytes(src).verify(msg, switch (key) {
-                .edsa => |v| v,
-                else => return error.InvalidDecodingKey,
-            }) catch {
-                return error.InvalidSignature;
-            };
-        },
+    if (!validation.skip_secret) {
+        switch (algo) {
+            .HS256 => {
+                var dest: [std.crypto.auth.hmac.sha2.HmacSha256.mac_length]u8 = undefined;
+                var src: [dest.len]u8 = undefined;
+                std.crypto.auth.hmac.sha2.HmacSha256.create(&dest, msg, switch (key) {
+                    .secret => |v| v,
+                    else => return error.InvalidDecodingKey,
+                });
+                @memcpy(&src, sig);
+                if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
+                    return error.InvalidSignature;
+                }
+            },
+            .HS384 => {
+                var dest: [std.crypto.auth.hmac.sha2.HmacSha384.mac_length]u8 = undefined;
+                var src: [dest.len]u8 = undefined;
+                std.crypto.auth.hmac.sha2.HmacSha384.create(&dest, msg, switch (key) {
+                    .secret => |v| v,
+                    else => return error.InvalidDecodingKey,
+                });
+                @memcpy(&src, sig);
+                if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
+                    return error.InvalidSignature;
+                }
+            },
+            .HS512 => {
+                var dest: [std.crypto.auth.hmac.sha2.HmacSha512.mac_length]u8 = undefined;
+                var src: [dest.len]u8 = undefined;
+                std.crypto.auth.hmac.sha2.HmacSha512.create(&dest, msg, switch (key) {
+                    .secret => |v| v,
+                    else => return error.InvalidDecodingKey,
+                });
+                @memcpy(&src, sig);
+                if (!std.crypto.utils.timingSafeEql([dest.len]u8, src, dest)) {
+                    return error.InvalidSignature;
+                }
+            },
+            .ES256 => {
+                var src: [std.crypto.sign.ecdsa.EcdsaP256Sha256.Signature.encoded_length]u8 = undefined;
+                @memcpy(&src, sig);
+                std.crypto.sign.ecdsa.EcdsaP256Sha256.Signature.fromBytes(src).verify(msg, switch (key) {
+                    .es256 => |v| v,
+                    else => return error.InvalidDecodingKey,
+                }) catch {
+                    return error.InvalidSignature;
+                };
+            },
+            .ES384 => {
+                var src: [std.crypto.sign.ecdsa.EcdsaP384Sha384.Signature.encoded_length]u8 = undefined;
+                @memcpy(&src, sig);
+                std.crypto.sign.ecdsa.EcdsaP384Sha384.Signature.fromBytes(src).verify(msg, switch (key) {
+                    .es384 => |v| v,
+                    else => return error.InvalidDecodingKey,
+                }) catch {
+                    return error.InvalidSignature;
+                };
+            },
+            // .PS256 => {
+            //     const modulus_len = 256;
+            //     const psSig = std.crypto.Certificate.rsa.PSSSignature.fromBytes(modulus_len, sig);
+            //     std.crypto.Certificate.rsa.PSSSignature.verify(modulus_len, psSig, msg, switch (key) {
+            //         .rsa => |v| v,
+            //         else => return error.InvalidDecodingKey,
+            //     }, std.crypto.hash.sha2.Sha256) catch {
+            //         return error.InvalidSignature;
+            //     };
+            // },
+            .EdDSA => {
+                var src: [std.crypto.sign.Ed25519.Signature.encoded_length]u8 = undefined;
+                @memcpy(&src, sig);
+                std.crypto.sign.Ed25519.Signature.fromBytes(src).verify(msg, switch (key) {
+                    .edsa => |v| v,
+                    else => return error.InvalidDecodingKey,
+                }) catch {
+                    return error.InvalidSignature;
+                };
+            },
 
-        //
-        //
-        else => return error.TODO,
+            //
+            //
+            else => return error.TODO,
+        }
     }
 
     try validation.validate(

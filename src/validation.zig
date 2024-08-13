@@ -45,6 +45,9 @@ pub const Validation = struct {
             return @intCast(std.time.timestamp());
         }
     }.func,
+    // skip verification of the secret - use this when you only want to view the claims from a token
+    // that you dont have the secret key for (ie - reading claims out of a 3rd party token)
+    skip_secret: bool = false,
 
     /// validate that token meets baseline of registered claims rules
     pub fn validate(self: @This(), claims: RegisteredClaims) anyerror!void {
