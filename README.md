@@ -8,7 +8,16 @@
 
 ---
 
-[![Main](https://github.com/softprops/zig-jwt/actions/workflows/ci.yml/badge.svg)](https://github.com/softprops/zig-jwt/actions/workflows/ci.yml) ![License Info](https://img.shields.io/github/license/softprops/zig-jwt) ![Release](https://img.shields.io/github/v/release/softprops/zig-jwt) [![Zig Support](https://img.shields.io/badge/zig-0.13.0-black?logo=zig)](https://ziglang.org/documentation/0.13.0/)
+This is a hard fork of github.com/softprops/zig-jwt
+
+Differences are :
+
+- Allows you to decode a JWT that you dont have the secret for
+- Fixes breaking changes from the latest 0.14 type name changes
+
+---
+
+[![Main](https://github.com/zigster64/jwt.zig/actions/workflows/ci.yml/badge.svg)](https://github.com/zigster64/jwt.zig/actions/workflows/ci.yml) ![License Info](https://img.shields.io/github/license/zigster64/jwt.zig) ![Release](https://img.shields.io/github/v/release/zigster64/jwt.zig) [![Zig Support](https://img.shields.io/badge/zig-0.13.0-black?logo=zig)](https://ziglang.org/documentation/0.14.0/)
 
 ## 📼 installing
 
@@ -21,7 +30,7 @@ Create a `build.zig.zon` file to declare a dependency
 Starting in zig 0.12.0, you can use and should prefer
 
 ```sh
-zig fetch --save https://github.com/softprops/zig-jwt/archive/refs/tags/v0.1.0.tar.gz
+zig fetch --save https://github.com/zigster64/jwt.zig/archive/refs/tags/v1.0.0.tar.gz
 ```
 
 otherwise, to manually add it, do so as follows
@@ -34,7 +43,7 @@ otherwise, to manually add it, do so as follows
 +       // 👇 declare dep properties
 +        .jwt = .{
 +            // 👇 uri to download
-+            .url = "https://github.com/softprops/zig-jwt/archive/refs/tags/v0.1.0.tar.gz",
++            .url = "https://github.com/zigster64/jwt.zig/archive/refs/tags/v1.0.0.tar.gz",
 +            // 👇 hash verification
 +            .hash = "...",
 +        },
@@ -42,7 +51,7 @@ otherwise, to manually add it, do so as follows
 }
 ```
 
-> the hash below may vary. you can also depend any tag with `https://github.com/softprops/zig-jwt/archive/refs/tags/v{version}.tar.gz` or current main with `https://github.com/softprops/zig-jwt/archive/refs/heads/main/main.tar.gz`. to resolve a hash omit it and let zig tell you the expected value.
+> the hash below may vary. you can also depend any tag with `https://github.com/zigster64/jwt.zig/archive/refs/tags/v{version}.tar.gz` or current main with `https://github.com/zigster64/jwt.zig/archive/refs/heads/main/main.tar.gz`. to resolve a hash omit it and let zig tell you the expected value.
 
 Add the following in your `build.zig` file
 
