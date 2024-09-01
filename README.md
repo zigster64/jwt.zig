@@ -17,8 +17,6 @@ Differences are :
 
 ---
 
-[![Main](https://github.com/zigster64/jwt.zig/actions/workflows/ci.yml/badge.svg)](https://github.com/zigster64/jwt.zig/actions/workflows/ci.yml) ![License Info](https://img.shields.io/github/license/zigster64/jwt.zig) ![Release](https://img.shields.io/github/v/release/zigster64/jwt.zig) [![Zig Support](https://img.shields.io/badge/zig-0.13.0-black?logo=zig)](https://ziglang.org/documentation/0.14.0/)
-
 ## 📼 installing
 
 Create a new exec project with `zig init`. Copy an example from the examples directory into your into `src/main.zig`
